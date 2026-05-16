@@ -1,79 +1,81 @@
 "use client";
 
-import Image from "next/image";
+import { 
+  siToyota, 
+  siHonda, 
+  siHyundai, 
+  siKia, 
+  siSuzuki, 
+  siNissan, 
+  siRenault, 
+  siVolkswagen, 
+  siTata, 
+  siMahindra, 
+  siSkoda, 
+  siFord 
+} from 'simple-icons';
+import { ArrowRight } from "lucide-react";
 
 export default function Brands() {
   const brands = [
-    {name: "BMW",image: "/cars/hero.webp", slug: "bmw"},
-    {name:"maruti suzuki", image: "/cars/hero.webp", slug: "maruti-suzuki"},
-    {name:"tata", image: "/cars/hero.webp", slug: "tata"},
-    {name:"mahindra", image: "/cars/hero.webp", slug: "mahindra"},
-    {name:"hyundai", image: "/cars/hero.webp", slug: "hyundai"},
-    {name:"toyota", image: "/cars/hero.webp", slug: "toyota"},
-    {name:"kia", image: "/cars/hero.webp", slug: "kia"},
-    {name:"skoda", image: "/cars/hero.webp", slug: "skoda"},
-    {name:"volkswagen", image: "/cars/hero.webp", slug: "volkswagen"},
-    {name:"mg", image: "/cars/hero.webp", slug: "mg"},
-    {name:"renault", image: "/cars/hero.webp", slug: "renault"},
-    {name:"mercedes-benz", image: "/cars/hero.webp", slug: "mercedes-benz"},
+    { name: "Toyota", icon: siToyota },
+    { name: "Honda", icon: siHonda },
+    { name: "Hyundai", icon: siHyundai },
+    { name: "Kia", icon: siKia },
+    { name: "Suzuki", icon: siSuzuki },
+    { name: "Nissan", icon: siNissan },
+    { name: "Volkswagen", icon: siVolkswagen },
+    { name: "Renault", icon: siRenault },
+    { name: "Tata", icon: siTata },
+    { name: "Mahindra", icon: siMahindra },
+    { name: "Skoda", icon: siSkoda },
+    { name: "Ford", icon: siFord },
   ];
 
   return (
-    <section className="bg-gray-50 py-20">
-      
+    <section className="bg-[#060816] py-24 border-t border-white/5">
       <div className="mx-auto max-w-7xl px-6">
-        
-        {/* TOP */}
-        <div className="mb-10">
-          
-          <h2 className="text-4xl font-black tracking-tight text-gray-900">
-            All Brands
-          </h2>
+        {/* HEADER */}
+        <div className="mb-16 flex flex-col items-center justify-between gap-6 md:flex-row">
+          <div>
+            <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-indigo-400">
+              Partnerships
+            </p>
+            <h2 className="text-4xl font-black tracking-tight text-white md:text-5xl">
+              Elite <span className="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Partnerships</span>
+            </h2>
+          </div>
+          <button className="group flex items-center gap-2 text-sm font-bold text-white/40 transition hover:text-white">
+            View All Brands
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+          </button>
         </div>
 
-        {/* BRANDS BOX */}
-        <div className="overflow-hidden rounded-[32px] border border-gray-300 bg-white">
-          
-          {/* GRID */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
-            
-            {brands.map((brand) => (
-              <div
-                key={brand.name}
-                className="group flex flex-col items-center justify-center border-b border-r border-gray-200 px-6 py-10 transition hover:bg-gray-50"
+        {/* BRANDS GRID */}
+        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-[32px] border border-white/5 bg-white/5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {brands.map((brand) => (
+            <div
+              key={brand.name}
+              className="group relative flex h-40 flex-col items-center justify-center bg-[#060816] transition-all duration-300 hover:bg-white/[0.02]"
+            >
+              {/* LOGO SVG */}
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                className="h-10 w-10 fill-white/20 transition-all duration-500 group-hover:scale-110"
+                style={{
+                  '--hover-color': `#${brand.icon.hex}`
+                }}
               >
-                
-                {/* LOGO */}
-                <div className="relative mb-5 h-[70px] w-[120px]">
-                  
-                  <Image
-                    src={brand.image}
-                    alt={brand.name}
-                    fill
-                    className="object-contain grayscale transition duration-300 group-hover:grayscale-0"
-                  />
-                </div>
-
-                {/* NAME */}
-                <h3 className="text-center text-lg font-semibold text-gray-800">
-                  {brand.name}
-                </h3>
-
-                {/* BUTTON */}
-                <button className="mt-4 rounded-full border border-gray-300 px-4 py-2 text-xs font-semibold text-gray-700 transition hover:border-black hover:text-black">
-                  View Cars
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* BOTTOM BUTTON */}
-          <div className="flex justify-center border-t border-gray-200 px-6 py-6">
-            
-            <button className="text-lg font-medium text-gray-700 transition hover:text-black">
-              View More Brands
-            </button>
-          </div>
+                <path d={brand.icon.path} className="group-hover:fill-[var(--hover-color)]" />
+              </svg>
+              
+              {/* BRAND NAME */}
+              <span className="absolute bottom-6 text-[10px] font-bold uppercase tracking-[0.2em] text-white/0 transition-all duration-300 group-hover:text-white/40">
+                {brand.name}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

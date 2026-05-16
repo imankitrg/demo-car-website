@@ -1,288 +1,424 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-
 import {
-  Search,
-  MapPin,
+  ArrowRight,
+  Play,
   Wallet,
   CarFront,
   Fuel,
   Settings2,
   SlidersHorizontal,
-  Users,
-  ShieldCheck,
-  Gauge,
-  Zap,
-  Palette,
   X,
+  Search,
+  ChevronDown,
+  Tag,
+  Gauge,
 } from "lucide-react";
+
+const CAR_TYPES = [
+  { label: "Buy New", value: "new", emoji: "✨" },
+  { label: "Buy Used", value: "used", emoji: "🔑" },
+  { label: "Sell Car", value: "sell", emoji: "💰" },
+];
+
+const FILTERS = [
+  {
+    id: "brand",
+    label: "Brand",
+    icon: CarFront,
+    color: "text-blue-400",
+    options: ["Toyota", "Honda", "BMW", "Mercedes", "Hyundai", "Kia", "Ford", "Audi", "Nissan", "Suzuki"],
+  },
+  {
+    id: "fuel",
+    label: "Fuel Type",
+    icon: Fuel,
+    color: "text-cyan-400",
+    options: ["Petrol", "Diesel", "Electric", "Hybrid"],
+  },
+  {
+    id: "transmission",
+    label: "Gearbox",
+    icon: Settings2,
+    color: "text-violet-400",
+    options: ["Automatic", "Manual", "Semi-Auto"],
+  },
+  {
+    id: "body",
+    label: "Body Type",
+    icon: Tag,
+    color: "text-pink-400",
+    options: ["SUV", "Sedan", "Hatchback", "Coupe", "Pickup Truck", "Van", "Convertible"],
+  },
+];
+
+const BUDGET_MIN = 100000;
+const BUDGET_MAX = 10000000;
+const BUDGET_STEP = 100000;
+
+function formatBudget(val) {
+  if (val >= 1000000) return `₹${(val / 1000000).toFixed(1)}L`;
+  if (val >= 100000) return `₹${(val / 100000).toFixed(0)}L`;
+  return `₹${val.toLocaleString()}`;
+}
+
+const PLACEHOLDER_CYCLE = [
+  "Search Toyota Fortuner...",
+  "Search Honda City...",
+  "Search BMW 3 Series...",
+  "Search Hyundai Creta...",
+  "Search any brand or model...",
+];
+
+const QUICK_TAGS = ["Toyota", "SUV", "Under ₹10L", "Electric", "Automatic"];
 
 export default function Hero() {
   const [showFilters, setShowFilters] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [budget, setBudget] = useState(2000000);
+  const [carType, setCarType] = useState("used");
+  const [selected, setSelected] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [isFocused, setIsFocused] = useState(false);
 
-  const filters = [
-    {
-      name: "Budget",
-      icon: <Wallet className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Body Type",
-      icon: <CarFront className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Transmission",
-      icon: <Settings2 className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Fuel Type",
-      icon: <Fuel className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Make",
-      icon: <CarFront className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Seating Capacity",
-      icon: <Users className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Mileage",
-      icon: <Gauge className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Safety Rating",
-      icon: <ShieldCheck className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Airbags",
-      icon: <ShieldCheck className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Additional Features",
-      icon: <SlidersHorizontal className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Engine Capacity",
-      icon: <Zap className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Power",
-      icon: <Zap className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Torque",
-      icon: <Zap className="h-5 w-5 text-teal-600" />,
-    },
-    {
-      name: "Colours",
-      icon: <Palette className="h-5 w-5 text-teal-600" />,
-    },
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIdx((p) => (p + 1) % PLACEHOLDER_CYCLE.length);
+    }, 2200);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleSelect = (filterId, opt) => {
+    setSelected((prev) => ({ ...prev, [filterId]: opt }));
+    setActiveDropdown(null);
+  };
+
+  const clearFilter = (filterId, e) => {
+    e.stopPropagation();
+    setSelected((prev) => {
+      const next = { ...prev };
+      delete next[filterId];
+      return next;
+    });
+  };
+
+  const budgetPercent = ((budget - BUDGET_MIN) / (BUDGET_MAX - BUDGET_MIN)) * 100;
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden bg-[#020205] pt-16 pb-16 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-48">
+      
       {/* BACKGROUND IMAGE */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <Image
-          src="/cars/hero.webp"
+          src="/home/officai_hero.Webp"
           alt="Hero Background"
           fill
           priority
-          className="object-cover"
+          className="object-cover opacity-90 scale-100"
         />
-
-        {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/55" />
+        <div className="absolute inset-0 bg-black/40 z-10" />
       </div>
 
-      {/* MAIN CONTENT */}
-      <div className="relative z-10 mx-auto grid min-h-[95vh] max-w-7xl grid-cols-1 items-center gap-16 px-4 py-20 sm:px-6 lg:grid-cols-2">
-        {/* LEFT CONTENT */}
-        <div className="text-white">
-          {/* BADGE */}
-          <div className="mb-5 inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-md">
-            Premium Car Marketplace
-          </div>
-
-          {/* HEADING */}
-          <h1 className="max-w-2xl text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-7xl">
-            Find Your
-            <span className="block text-gray-300">Perfect Drive</span>
-          </h1>
-
-          {/* DESCRIPTION */}
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-gray-300 sm:text-lg">
-            Explore luxury, electric, and performance cars with a modern buying
-            experience built for speed and simplicity.
-          </p>
-
-          {/* BUTTONS */}
-          <div className="mt-8 flex flex-wrap gap-4">
-            <button className="rounded-full bg-white px-7 py-3 text-sm font-semibold text-black transition hover:bg-gray-200">
-              Explore Cars
-            </button>
-
-            <button className="rounded-full border border-white/20 bg-white/10 px-7 py-3 text-sm font-semibold text-white backdrop-blur-md transition hover:border-white">
-              Sell Your Car
-            </button>
-          </div>
-
-          {/* STATS */}
-          <div className="mt-12 flex flex-wrap gap-8 sm:gap-10">
-            <div>
-              <h3 className="text-3xl font-black">120+</h3>
-
-              <p className="mt-1 text-sm text-gray-300">Premium Cars</p>
+      <div className="relative z-10 mx-auto max-w-7xl px-6">
+        <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.1fr_1fr]">
+          
+          {/* LEFT */}
+          <div className="max-w-2xl">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur-md">
+              <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-widest text-white/80">
+                200+ Premium Cars in Stock
+              </span>
             </div>
 
-            <div>
-              <h3 className="text-3xl font-black">85+</h3>
+            <h1 className="text-5xl font-black leading-[1.05] tracking-tight text-white sm:text-6xl md:text-7xl">
+              Drive The{" "}
+              <span className="bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                Future
+              </span>{" "}
+              of Luxury
+            </h1>
 
-              <p className="mt-1 text-sm text-gray-300">Happy Buyers</p>
+            <p className="mt-8 text-lg leading-relaxed text-white/60">
+              Experience the pinnacle of automotive excellence. We source, inspect, and deliver the world&apos;s most prestigious vehicles directly to your doorstep.
+            </p>
+
+            <div className="mt-12 flex flex-wrap gap-5">
+              <button className="group flex items-center gap-3 rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 px-10 py-5 text-sm font-black text-white shadow-lg shadow-blue-500/25 transition hover:opacity-90">
+                Explore Collection
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </button>
+              <button className="flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-10 py-5 text-sm font-bold text-white transition hover:bg-white/10">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-white/10">
+                  <Play className="h-3 w-3 fill-white" />
+                </div>
+                Watch Showreel
+              </button>
             </div>
 
-            <div>
-              <h3 className="text-3xl font-black">24/7</h3>
-
-              <p className="mt-1 text-sm text-gray-300">Support</p>
+            <div className="mt-16 grid grid-cols-3 gap-8 border-t border-white/5 pt-12">
+              {[
+                { label: "Cars Sold", value: "2.4k+" },
+                { label: "Happy Clients", value: "99%" },
+                { label: "Locations", value: "12+" },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <p className="text-2xl font-black text-white">{stat.value}</p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-wider text-white/40">{stat.label}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* RIGHT SEARCH UI */}
-        <div className="w-full">
-          <div className="rounded-[28px] bg-white p-5 shadow-2xl sm:rounded-[36px] sm:p-8 md:p-10">
-            {/* TOP */}
-            <div className="mb-8 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-              <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-gray-400 sm:text-sm">
-                  Smart Search
-                </p>
+          {/* RIGHT: ALIVE SEARCH BOX */}
+          <div className="relative z-20">
+            <div className="rounded-[40px] border border-white/10 bg-white/[0.03] p-8 backdrop-blur-3xl shadow-2xl">
 
-                <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl md:text-4xl">
-                  Find Your Right Car
-                </h2>
+              {/* BUY NEW / BUY USED / SELL CAR TABS */}
+              <div className="mb-8 flex gap-2 rounded-2xl bg-white/5 p-2">
+                {CAR_TYPES.map((type) => (
+                  <button
+                    key={type.value}
+                    onClick={() => setCarType(type.value)}
+                    className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-xs font-black transition-all duration-300 ${carType === type.value
+                        ? "bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 text-white shadow-lg shadow-blue-500/20"
+                        : "text-white/40 hover:text-white/70"
+                      }`}
+                  >
+                    <span className="text-sm">{type.emoji}</span>
+                    {type.label}
+                  </button>
+                ))}
               </div>
 
-              {/* LOCATION */}
-              <button className="flex items-center gap-2 text-base font-semibold text-gray-700 sm:text-lg">
-                Mumbai
-                <MapPin className="h-5 w-5" />
-              </button>
-            </div>
+              <div className="space-y-4">
 
-            {/* SEARCH BAR */}
-            <div className="flex flex-col gap-4 rounded-[28px] border border-gray-300 p-3 sm:rounded-[32px]">
-              {/* TOGGLE */}
-              <div className="flex w-fit rounded-full bg-gray-100 p-1">
-                <button className="rounded-full bg-teal-600 px-5 py-3 text-sm font-semibold text-white sm:px-6">
-                  New
-                </button>
-
-                <button className="rounded-full px-5 py-3 text-sm font-semibold text-gray-600 sm:px-6">
-                  Used
-                </button>
-              </div>
-
-              {/* INPUT */}
-              <div className="flex items-center justify-between gap-4">
-                <input
-                  type="text"
-                  placeholder="Type to select car name"
-                  className="w-full bg-transparent px-2 py-3 text-base text-gray-800 outline-none placeholder:text-gray-400 sm:text-lg"
-                />
-
-                <button className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-300 transition hover:border-black sm:h-14 sm:w-14">
-                  <Search className="h-5 w-5 text-gray-700 sm:h-6 sm:w-6" />
-                </button>
-              </div>
-            </div>
-
-            {/* QUICK FILTERS */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-black hover:bg-white sm:px-5 sm:py-4 sm:text-base">
-                <Wallet className="h-5 w-5 text-teal-600" />
-                Budget
-              </button>
-
-              <button className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-black hover:bg-white sm:px-5 sm:py-4 sm:text-base">
-                <CarFront className="h-5 w-5 text-teal-600" />
-                Body Type
-              </button>
-
-              <button className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-black hover:bg-white sm:px-5 sm:py-4 sm:text-base">
-                <Fuel className="h-5 w-5 text-teal-600" />
-                Fuel Type
-              </button>
-
-              <button className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-medium text-gray-700 transition hover:border-black hover:bg-white sm:px-5 sm:py-4 sm:text-base">
-                <Settings2 className="h-5 w-5 text-teal-600" />
-                Transmission
-              </button>
-
-              {/* ALL FILTER BUTTON */}
-              <button
-                onClick={() => setShowFilters(true)}
-                className="flex items-center gap-3 rounded-2xl border border-teal-600 bg-teal-600 px-4 py-3 text-sm font-medium text-white transition hover:opacity-90 sm:px-5 sm:py-4 sm:text-base"
-              >
-                <SlidersHorizontal className="h-5 w-5" />
-                All Filters
-              </button>
-            </div>
-
-            {/* FILTER MODAL */}
-            {showFilters && (
-              <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-6">
-                <div className="flex h-[92vh] w-full max-w-3xl flex-col rounded-t-[32px] bg-white p-5 sm:h-auto sm:max-h-[90vh] sm:rounded-[32px] sm:p-8">
-                  
-                  {/* HEADER */}
-                  <div className="flex items-center justify-between border-b border-gray-200 pb-5">
-                    <h3 className="text-2xl font-black text-gray-900">
-                      All Filters
-                    </h3>
-
+                {/* SEARCH INPUT — cycling placeholder */}
+                <div
+                  className={`relative flex items-center rounded-2xl border transition-all duration-300 ${isFocused
+                      ? "border-indigo-500/60 bg-white/10 shadow-lg shadow-indigo-500/10"
+                      : "border-white/5 bg-white/5 hover:border-white/10"
+                    }`}
+                >
+                  <Search
+                    className={`absolute left-6 h-5 w-5 transition-colors duration-200 ${isFocused ? "text-indigo-400" : "text-white/30"
+                      }`}
+                  />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    placeholder={PLACEHOLDER_CYCLE[placeholderIdx]}
+                    className="h-16 w-full bg-transparent pl-16 pr-12 text-sm font-medium text-white outline-none placeholder:text-white/25"
+                  />
+                  {searchQuery && (
                     <button
-                      onClick={() => setShowFilters(false)}
-                      className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-5 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white/50 hover:text-white transition"
                     >
-                      <X className="h-5 w-5" />
+                      <X className="h-4 w-4" />
                     </button>
+                  )}
+                </div>
+
+                {/* BUDGET SLIDER — always visible, no dropdown */}
+                <div className="rounded-2xl border border-white/5 bg-white/5 px-6 py-5">
+                  <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Wallet className="h-5 w-5 text-indigo-400" />
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">
+                        Budget Range
+                      </span>
+                    </div>
+                    <span className="text-sm font-black text-indigo-300">
+                      Up to {formatBudget(budget)}
+                    </span>
                   </div>
-
-                  {/* FILTER LIST */}
-                  <div className="mt-6 grid flex-1 grid-cols-1 gap-4 overflow-y-auto pr-1 sm:grid-cols-2">
-                    {filters.map((filter, index) => (
-                      <button
-                        key={index}
-                        className="flex items-center gap-4 rounded-2xl border border-gray-200 bg-gray-50 px-5 py-5 text-left transition hover:border-teal-600 hover:bg-white"
-                      >
-                        {filter.icon}
-
-                        <span className="text-sm font-semibold text-gray-700 sm:text-base">
-                          {filter.name}
-                        </span>
-                      </button>
-                    ))}
+                  <div className="relative h-2 rounded-full bg-white/10">
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-150"
+                      style={{ width: `${budgetPercent}%` }}
+                    />
+                    <input
+                      type="range"
+                      min={BUDGET_MIN}
+                      max={BUDGET_MAX}
+                      step={BUDGET_STEP}
+                      value={budget}
+                      onChange={(e) => setBudget(Number(e.target.value))}
+                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                    />
                   </div>
-
-                  {/* FOOTER */}
-                  <div className="mt-6 flex items-center justify-between border-t border-gray-200 pt-5">
-                    <button className="text-sm font-bold text-gray-500 transition hover:text-black sm:text-base">
-                      Clear All
-                    </button>
-
-                    <button className="rounded-full bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-teal-700 sm:px-7 sm:text-base">
-                      Apply Changes
-                    </button>
+                  <div className="mt-3 flex justify-between text-[10px] font-bold text-white/20 uppercase">
+                    <span>{formatBudget(BUDGET_MIN)}</span>
+                    <span>{formatBudget(BUDGET_MAX)}</span>
                   </div>
                 </div>
+
+                {/* FILTER DROPDOWNS — 2x2 grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  {FILTERS.map((filter) => {
+                    const Icon = filter.icon;
+                    const isOpen = activeDropdown === filter.id;
+                    const picked = selected[filter.id];
+                    return (
+                      <div key={filter.id} className="relative">
+                        <button
+                          onClick={() =>
+                            setActiveDropdown(isOpen ? null : filter.id)
+                          }
+                          className={`flex w-full items-center justify-between rounded-2xl border px-5 py-4 transition-all duration-200 ${isOpen
+                              ? "border-indigo-500/50 bg-white/10"
+                              : picked
+                                ? "border-indigo-500/30 bg-indigo-500/10"
+                                : "border-white/5 bg-white/5 hover:border-white/10"
+                            }`}
+                        >
+                          <div className="flex items-center gap-3 min-w-0">
+                            <Icon
+                              className={`h-4 w-4 flex-shrink-0 ${picked ? "text-indigo-400" : filter.color
+                                }`}
+                            />
+                            <div className="flex flex-col items-start min-w-0">
+                              <span className="text-[9px] uppercase tracking-widest text-white/30">
+                                {filter.label}
+                              </span>
+                              <span
+                                className={`text-xs font-black truncate max-w-[80px] ${picked ? "text-white" : "text-white/40"
+                                  }`}
+                              >
+                                {picked || "Any"}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {picked && (
+                              <button
+                                onClick={(e) => clearFilter(filter.id, e)}
+                                className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-white/40 hover:text-white transition"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            )}
+                            <ChevronDown
+                              className={`h-4 w-4 text-white/20 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                                }`}
+                            />
+                          </div>
+                        </button>
+
+                        {/* DROPDOWN */}
+                        {isOpen && (
+                          <div className="absolute top-[calc(100%+8px)] left-0 z-50 w-full rounded-2xl border border-white/10 bg-[#0c0e1e] py-3 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200">
+                            {filter.options.map((opt) => (
+                              <button
+                                key={opt}
+                                onClick={() => handleSelect(filter.id, opt)}
+                                className={`flex w-full items-center gap-3 px-6 py-3 text-left text-xs font-bold transition hover:bg-white/5 ${selected[filter.id] === opt
+                                    ? "text-indigo-400"
+                                    : "text-white/50 hover:text-white"
+                                  }`}
+                              >
+                                {selected[filter.id] === opt && (
+                                  <span className="h-2 w-2 rounded-full bg-indigo-400 flex-shrink-0" />
+                                )}
+                                {opt}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* SEARCH BUTTON */}
+                <button
+                  onClick={() => setShowFilters(true)}
+                  className="group mt-2 w-full flex h-16 items-center justify-center gap-4 rounded-2xl bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 text-base font-black text-white shadow-xl shadow-indigo-500/25 transition-all hover:shadow-indigo-500/40 hover:scale-[1.015] active:scale-95"
+                >
+                  <Search className="h-5 w-5" />
+                  Find My Car
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </button>
+
+                {/* QUICK SEARCH TAGS */}
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {QUICK_TAGS.map((tag) => (
+                    <button
+                      key={tag}
+                      onClick={() => setSearchQuery(tag)}
+                      className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] font-bold text-white/40 transition hover:border-indigo-500/40 hover:text-indigo-300 hover:bg-indigo-500/10"
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
+
+      {/* ADVANCED FILTER MODAL */}
+      {showFilters && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 backdrop-blur-sm p-0 sm:items-center sm:p-6">
+          <div className="flex h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[32px] border border-white/10 bg-[#0b0d1a] sm:h-auto sm:max-h-[85vh] sm:rounded-[32px]">
+            <div className="flex items-center justify-between border-b border-white/5 p-8">
+              <h3 className="text-2xl font-black text-white">Advanced Filters</h3>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 text-white transition hover:bg-white/10"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 pr-6 custom-scrollbar">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {[
+                  { name: "Price Range", icon: <Wallet className="h-5 w-5 text-indigo-400" /> },
+                  { name: "Body Style", icon: <CarFront className="h-5 w-5 text-blue-400" /> },
+                  { name: "Fuel Type", icon: <Fuel className="h-5 w-5 text-cyan-400" /> },
+                  { name: "Transmission", icon: <Settings2 className="h-5 w-5 text-indigo-400" /> },
+                  { name: "Year", icon: <SlidersHorizontal className="h-5 w-5 text-blue-400" /> },
+                  { name: "Mileage", icon: <Gauge className="h-5 w-5 text-cyan-400" /> },
+                ].map((filter, index) => (
+                  <button
+                    key={index}
+                    className="flex items-center justify-between rounded-2xl border border-white/5 bg-white/5 p-6 text-left transition hover:border-indigo-500/50 hover:bg-white/10"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5">
+                        {filter.icon}
+                      </div>
+                      <span className="text-sm font-bold text-white">{filter.name}</span>
+                    </div>
+                    <ChevronDown className="h-4 w-4 text-white/20" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-white/5 bg-white/5 p-8">
+              <button className="text-sm font-bold text-white/40 transition hover:text-white">
+                Clear All
+              </button>
+              <button
+                onClick={() => setShowFilters(false)}
+                className="rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 px-10 py-4 text-sm font-black text-white shadow-lg shadow-blue-500/20 transition hover:opacity-90"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

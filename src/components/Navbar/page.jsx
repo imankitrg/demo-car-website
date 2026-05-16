@@ -10,24 +10,22 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#060816]/90 backdrop-blur-xl">
-      
+
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        
+
         {/* LOGO */}
         <Link href="/" className="flex items-center gap-3">
-          
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 text-lg font-black text-white shadow-lg shadow-blue-500/20">
-            C
+            D
           </div>
-
           <span className="text-2xl font-black tracking-tight text-white">
-            Car
+            Demo<span className="text-blue-400">Car</span>
           </span>
         </Link>
 
         {/* NAVIGATION LINKS */}
         <div className="hidden lg:flex items-center gap-2">
-          
+
           <Link
             href="/car"
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
@@ -52,17 +50,16 @@ export default function Navbar() {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-3">
-          
+
           {/* SEARCH BAR */}
           <div
-            className={`overflow-hidden transition-all duration-300 ${
-              showSearch
-                ? "w-[250px] opacity-100"
-                : "w-0 opacity-0"
-            }`}
+            className={`overflow-hidden transition-all duration-300 ${showSearch
+              ? "w-[250px] opacity-100"
+              : "w-0 opacity-0"
+              }`}
           >
             <div className="flex h-12 items-center rounded-full border border-white/10 bg-white/10 px-4 backdrop-blur-xl">
-              
+
               <Search className="h-4 w-4 text-white/60" />
 
               <input
