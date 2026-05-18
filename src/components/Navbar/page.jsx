@@ -30,21 +30,21 @@ export default function Navbar() {
             href="/car"
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            Cars
+            Used Cars
           </Link>
 
           <Link
             href="/about"
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            About Us
+            New Cars
           </Link>
 
           <Link
-            href="/contact"
+            href="/dealers"
             className="rounded-full px-5 py-2.5 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
           >
-            Contact
+            Dealerships
           </Link>
         </div>
 

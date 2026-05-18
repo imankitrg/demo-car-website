@@ -47,7 +47,7 @@ export default function Testimonials() {
               className="group relative rounded-[32px] border border-white/5 bg-white/[0.02] p-10 transition-all duration-300 hover:border-white/10 hover:bg-white/[0.04]"
             >
               <Quote className="absolute right-10 top-10 h-10 w-10 text-white/5" />
-              
+
               {/* STARS */}
               <div className="mb-6 flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
