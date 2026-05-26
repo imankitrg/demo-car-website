@@ -159,7 +159,7 @@ export default function Footer() {
             © {new Date().getFullYear()} democar Automotive Group. All rights
             reserved.
           </p>
-          <div className="flex gap-8 text-xs font-bold uppercase tracking-widest text-white/20">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-xs font-bold uppercase tracking-widest text-white/20">
             <Link href="/privacy" className="hover:text-white transition">
               Privacy Policy
             </Link>

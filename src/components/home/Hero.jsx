@@ -50,7 +50,7 @@ export default function Hero() {
         </div>
 
         {/* MAIN TITLE (CENTERED) */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white max-w-4xl leading-[1.1]">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-white max-w-4xl leading-[1.15] sm:leading-[1.1]">
           The best place to find your <br className="sm:hidden" />
           <span className="font-serif italic font-normal tracking-wide bg-gradient-to-r from-indigo-400 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
             Dream Car
@@ -65,22 +65,24 @@ export default function Hero() {
         {/* CENTERED PILL SEARCH BAR */}
         <form
           onSubmit={handleSearchSubmit}
-          className="relative mt-10 max-w-2xl w-full px-2"
+          className="relative mt-8 sm:mt-10 max-w-2xl w-full px-4 sm:px-2"
         >
-          <div className="flex items-center rounded-full border border-white/10 bg-white/[0.03] p-1.5 backdrop-blur-md shadow-2xl focus-within:border-indigo-500/40 focus-within:shadow-indigo-500/5 focus-within:ring-1 focus-within:ring-indigo-500/20 transition-all duration-300">
-            <Search className="ml-4 h-5 w-5 text-white/30 flex-shrink-0" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by brand, model, or category..."
-              className="w-full bg-transparent px-4 py-3.5 text-sm font-medium text-white outline-none placeholder:text-white/30"
-            />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center rounded-2xl sm:rounded-full border border-white/10 bg-white/[0.03] p-2 sm:p-1.5 backdrop-blur-md shadow-2xl focus-within:border-indigo-500/40 focus-within:shadow-indigo-500/5 focus-within:ring-1 focus-within:ring-indigo-500/20 transition-all duration-300 gap-2 sm:gap-0">
+            <div className="flex items-center flex-1 bg-white/5 sm:bg-transparent rounded-full px-2 sm:px-0">
+              <Search className="ml-3 sm:ml-4 h-5 w-5 text-white/30 flex-shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by brand or model..."
+                className="w-full bg-transparent px-3 sm:px-4 py-3 sm:py-3.5 text-sm font-medium text-white outline-none placeholder:text-white/30"
+              />
+            </div>
 
             {/* Search Now Action Button */}
             <button
               type="submit"
-              className="flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 px-8 py-3.5 text-sm font-black text-white hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-indigo-500/20 flex-shrink-0"
+              className="flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-blue-500 to-cyan-400 px-8 py-3.5 text-sm font-black text-white hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-indigo-500/20 flex-shrink-0 w-full sm:w-auto"
             >
               <span>Search Now</span>
               <ArrowRight className="h-4 w-4" />

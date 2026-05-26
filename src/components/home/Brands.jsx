@@ -37,7 +37,7 @@ export default function Brands() {
       <div className="mx-auto max-w-7xl px-6">
         {/* HEADER */}
         <div className="mb-16 flex flex-col items-center justify-between gap-6 md:flex-row">
-          <div>
+          <div className="text-center md:text-left">
             <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-indigo-400">
               Partnerships
             </p>

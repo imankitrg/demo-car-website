@@ -43,7 +43,7 @@ export default function FeaturedCars() {
           {sections.map((section) => (
             <div key={section.key} className="relative">
               {/* SECTION HEADER */}
-              <div className="mb-10 flex items-end justify-between">
+              <div className="mb-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4 sm:gap-0">
                 <div>
                   <h3 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
                     {section.title}

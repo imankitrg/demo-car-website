@@ -55,7 +55,7 @@ export default function HowWeWork() {
 
         {/* HEADER */}
         <div className="mb-16 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
+          <div className="text-center lg:text-left">
             <p className="mb-4 text-sm font-bold uppercase tracking-[0.25em] text-indigo-400">
               Process
             </p>
@@ -66,7 +66,7 @@ export default function HowWeWork() {
               </span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm text-white/40 lg:text-right">
+          <p className="max-w-sm text-sm text-white/40 text-center lg:text-right">
             From search to delivery — a seamless experience built around you.
           </p>
         </div>
